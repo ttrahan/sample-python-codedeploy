@@ -7,6 +7,7 @@ deploymentId = deploymentInfo['deploymentId']
 
 def probe(deploymentId):
   result = json.loads(subprocess.check_output(['aws', 'deploy', 'get-deployment', '--deployment-id', deploymentId]))
+  print result
   return result['deploymentInfo']['status']
 
 while True:
