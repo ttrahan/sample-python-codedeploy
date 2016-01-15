@@ -5,11 +5,12 @@ python:
 
 env:
   global:
-    - AWS_ACCESS_KEY_ID=AKIAJJL2U6T3F3Y5JIGA
-    - AWS_DEFAULT_REGION=us-west-2
-    - secure: i+TtDQJOhWDHHBefmYXTla+yGLmkIcUhiTApZ4FADAVD3gYI9wVsup2QlU8bTcjUglMLgBsZuKIBDls6x98sggLe/H1mbifibZcEDPWGpiml9O2+6hvl32maKvNx8UeWjx/0aoNXt/UtUGS6G0KHerj+Wik4/nvo5eokxFs1FrkZl8IrNZ6GSFWhvwiQZIXGw1GdNIiNMmqX+fS7AOfdZTrUc9WHq4QM4nTzr92FZwR+zn2BwQhCtDOOa5GyRh58V9v9lQubksv/4H0LSfm7flepsUSDNc8ooJ9qLZBOyCsf8XACXWgjzwzwu9vETZsqUn2Iwjr4zW/jvXi/Q7l34g==
-    - CD_APP_NAME=ShippableCodeDeploy CD_BUCKET=codedeploy-sample CD_KEY=latest 
-    - CD_DEPLOYMENT_GROUP=DemoFleet
+    - secure: F3p8duUdQhRtcdCszEIqMFymbyvmSLRmf/af/u5nHaFRawmK9YbDJ0dL/Cvkt1gT4/azKRX7rn/ZRFJuZWhWe42gb/k4MbFSXZGQOL9E76vvsF39Bei06z9ijGTVNhvec9X00aGC5v6ua9ka99KG/e3E/nY3hHnKrXB3/apD4kKCW+GOD+MnFvHt98YXaX5SwxIAMidALGIIkbZ7Xk+n01wdJpi4m1ubP1S7wERPmxsWTvzJXUXfcVEpcm+JisMsIfyqq9V94A4Axu2dDqbI6S2VgT0BNjVuXpQ0mUeotOZIyIWYO/NH69s+WR3hGZTY9r/dYpqqUzU5khbEfoz7Ng==
+    - AWS_DEFAULT_REGION=us-east-1
+    - CD_APP_NAME=ShippableCodeDeployDemo
+    - CD_BUCKET=shippablecodedeploy-bucket
+    - CD_KEY=latest 
+    - CD_DEPLOYMENT_GROUP=ShippableDemoFleet
 
 before_install:
   - pip install awscli
@@ -17,7 +18,7 @@ before_install:
 install:
   - pip install -r requirements.txt
 
-before_script: 
+before_script:
   - mkdir -p shippable/testresults
   - mkdir -p shippable/codecoverage
 
@@ -29,6 +30,6 @@ script:
 after_success:
   # Use the following for GitHub-based deployments:
   # - aws deploy create-deployment --application-name $CD_APP_NAME --github-location repository=$REPO_NAME,commitId=$COMMIT --deployment-group-name $CD_DEPLOYMENT_GROUP | python scripts/wait_for_completion.py
-  # This method uses S3 bucket to upload the build artifacts 
+  # This method uses S3 bucket to upload the build artifacts
   - aws deploy push --application-name $CD_APP_NAME --s3-location s3://$CD_BUCKET/$CD_KEY --ignore-hidden-files
   - aws deploy create-deployment --application-name $CD_APP_NAME --s3-location bucket=$CD_BUCKET,key=$CD_KEY,bundleType=zip --deployment-group-name $CD_DEPLOYMENT_GROUP | python scripts/wait_for_completion.py
